@@ -11,7 +11,7 @@
         constructor: BootState,
 
         preload: function () {
-            this.game.load.image("loading", "/assets/loading.png");
+            this.game.load.image("loading", "assets/loading.png");
         },
 
         create: function () {
