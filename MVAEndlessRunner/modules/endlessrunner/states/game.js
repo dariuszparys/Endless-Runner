@@ -1,8 +1,9 @@
 ﻿define([
     "Phaser",
+    "jquery",
     "units/player",
     "units/bomb"
-], function (Phaser, Player, Bomb) {
+], function (Phaser, $, Player, Bomb) {
 
     var tileSpriteMoveSpeed;
     var meterSpeed;
@@ -76,6 +77,8 @@
             tileSpriteMoveSpeed = 0;
             meterSpeed = 0;
             player.destroy();
+            var currentDate = new Date();
+            $.post("http://leaderboardweb.azurewebsites.net/api/leaderboard", { score: Math.floor(meters).toString() + " m", when: currentDate.toJSON() });
             this.game.time.events.add(Phaser.Timer.SECOND * 3, this.exitScene, this);
         },
 

@@ -2,7 +2,8 @@
 
 requirejs.config({
     paths: {
-        Phaser: "vendor/phaser"
+        Phaser: "vendor/phaser",
+        jquery: "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min"
     }
 });
 
