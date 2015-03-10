@@ -12,6 +12,7 @@
 
     var player;
     var cursors;
+    var collisionDetected = false;
 
     var GameState = function (game) {
 
@@ -54,10 +55,18 @@
             tileSprite.tilePosition.x -= tileSpriteMoveSpeed;
             meters += meterSpeed;
 
-            if (cursors.up.isDown) {
-                player.position.y -= 8;
-            } else if (cursors.down.isDown) {
-                player.position.y += 8;
+            //if (cursors.up.isDown) {
+            //    player.position.y -= 8;
+            //} else if (cursors.down.isDown) {
+            //    player.position.y += 8;
+        	//}
+
+            if (player.body) {
+            	this.game.physics.arcade.moveToPointer(
+					player,
+					60,
+					this.game.input.activePointer,
+					500);
             }
 
             hudMeters.setText("Meter: " + Math.floor(meters).toString() + " m");
@@ -90,9 +99,7 @@
 
         speedUp: function () {
             tileSpriteMoveSpeed++;
-        }
-
-
+        },
     };
 
     return GameState;

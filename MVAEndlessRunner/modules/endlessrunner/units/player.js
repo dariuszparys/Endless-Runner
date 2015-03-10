@@ -9,6 +9,7 @@
 
         this.body.collideWorldBounds = true;
         this.body.checkCollision = true;
+        this.body.allowRotation = false;
         this.anchor.setTo(0.5, 0.5);
     }
 
