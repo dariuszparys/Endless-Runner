@@ -34,9 +34,17 @@
 
     }
 
-    function processCollision(obj1, obj2) {
-        gameScene.gameOver();
-        this.destroy();
+    // processCollision is called when the bomb and player bodies are touching AND overlap returns true.
+    // obj1 will be the bomb, obj2 will be the player.
+    function processCollision(bombSprite, playerSprite) { // Renamed parameters for clarity
+        if (gameScene.getPlayer() && gameScene.getPlayer().isShielded) {
+            // Player is shielded, bomb is destroyed, game does not end
+            bombSprite.destroy(); // or this.destroy() if context is correctly bound
+        } else {
+            // Player is not shielded, game over
+            gameScene.gameOver();
+            bombSprite.destroy(); // or this.destroy()
+        }
     }
 
     function calculateBombSpeed() {

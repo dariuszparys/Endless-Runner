@@ -1,8 +1,9 @@
 ﻿define([
     "Phaser",
     "units/player",
-    "units/bomb"
-], function (Phaser, Player, Bomb) {
+    "units/bomb",
+    "units/shield"
+], function (Phaser, Player, Bomb, Shield) {
 
     var tileSpriteMoveSpeed;
     var meterSpeed;
@@ -13,6 +14,7 @@
     var player;
     var cursors;
     var collisionDetected = false;
+    var shields; 
 
     var GameState = function (game) {
 
@@ -35,6 +37,10 @@
             
             player = new Player(this.game, 300, 300);
             this.game.add.existing(player);
+            player.isShielded = false; 
+
+            shields = this.game.add.group();
+            shields.enableBody = true;
 
             hudMeters = this.game.add.text(10, 10, "Meter: 0 m", {
                 font: "30px Arial",
@@ -47,10 +53,12 @@
 
         init: function () {            
             this.game.time.events.loop(Phaser.Timer.SECOND * 0.5, this.createBomb, this);
+            this.game.time.events.loop(Phaser.Timer.SECOND * 10, this.createShield, this);
             this.game.time.events.loop(Phaser.Timer.SECOND * 10, this.speedUp);
         },
 
         update: function () {
+            this.game.physics.arcade.overlap(player, shields, this.playerHitShield, null, this);
 
             tileSprite.tilePosition.x -= tileSpriteMoveSpeed;
             meters += meterSpeed;
@@ -99,6 +107,37 @@
 
         speedUp: function () {
             tileSpriteMoveSpeed++;
+        },
+
+        createShield: function () {
+            var shield = shields.create(1000, this.game.world.randomY, "shield");
+            if (shield) { // Check if shield was successfully created
+                 // Apply a tint to differentiate from bombs. Green is a common shield color.
+                shield.tint = 0x00ff00; // Green tint
+                var shieldInstance = new Shield(this.game, shield.x, shield.y, this);
+                shield.destroy(); // Remove the sprite created by group.create
+                this.game.add.existing(shieldInstance); // Add the proper Shield instance
+                shields.add(shieldInstance); // Add it to the group for collision detection
+            }
+        },
+
+        playerHitShield: function (playerObj, shield) {
+            shield.destroy(); 
+            
+            if (player) { 
+                player.isShielded = true; 
+                // Optional: Add visual feedback for shield activation, e.g., player.tint = 0x00ff00;
+                this.game.time.events.add(Phaser.Timer.SECOND * 3, this.removeShieldProtection, this, player); 
+            }
+        },
+
+        removeShieldProtection: function (playerObj) {
+            // Access the main player object from the GameState, or use the passed argument
+            var shieldedPlayer = playerObj || player; // Prefer passed playerObj if available
+            if (shieldedPlayer) {
+                shieldedPlayer.isShielded = false;
+                // Optional: Remove visual feedback, e.g., player.tint = 0xffffff; // Reset tint
+            }
         },
     };
 

@@ -21,6 +21,7 @@
             this.game.load.image("background", "assets/bg.png");
             this.game.load.image("player", "assets/player.png");
             this.game.load.image("bomb", "assets/bomb.png");
+            this.game.load.image("shield", "assets/bomb.png");
             this.game.load.image("play", "assets/play.png");
 
         },
