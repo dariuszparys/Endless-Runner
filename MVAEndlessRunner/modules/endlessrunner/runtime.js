@@ -3,7 +3,8 @@
 requirejs.config({
     paths: {
         Phaser: "vendor/phaser"
-    }
+    },
+    urlArgs: "bust=" + (new Date()).getTime()
 });
 
 
