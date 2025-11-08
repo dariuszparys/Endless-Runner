@@ -20,9 +20,8 @@ define([
         this.drawCircle(-5, -5, 15);
         this.endFill();
 
-        game.physics.arcade.enable(this);
-        this.body.setCircle(15);
-        this.body.checkCollision = true;
+        // Physics will be enabled in update() after the object is added to the game
+        this.physicsInitialized = false;
 
         gameScene = theGame;
     }
@@ -31,10 +30,22 @@ define([
     Coin.prototype.constructor = Coin;
 
     Coin.prototype.update = function () {
+        // Initialize physics after the object has been added to the game
+        if (!this.physicsInitialized) {
+            this.game.physics.arcade.enable(this);
+            if (this.body) {
+                this.body.setCircle(15);
+                this.body.checkCollision = true;
+                this.physicsInitialized = true;
+            }
+        }
+
         calculateCoinSpeed();
 
         // Check for collection (overlap with player)
-        this.game.physics.arcade.overlap(this, gameScene.getPlayer(), this.collect, null, this);
+        if (this.physicsInitialized) {
+            this.game.physics.arcade.overlap(this, gameScene.getPlayer(), this.collect, null, this);
+        }
 
         this.position.x -= coinSpeed;
         if (this.position.x < -50) {
