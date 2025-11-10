@@ -16,6 +16,7 @@
     var player;
     var cursors;
     var collisionDetected = false;
+    var coinGroup;
 
     var GameState = function (game) {
 
@@ -39,6 +40,9 @@
 
             player = new Player(this.game, 300, 300);
             this.game.add.existing(player);
+
+            coinGroup = this.game.add.group();
+            coinGroup.enableBody = true;
 
             hudMeters = this.game.add.text(10, 10, "Meter: 0 m", {
                 font: "30px Arial",
@@ -83,6 +87,11 @@
             hudMeters.setText("Meter: " + Math.floor(meters).toString() + " m");
             hudCoins.setText("Coins: " + coins.toString());
 
+            // Check for coin collection
+            if (player.body) {
+                this.game.physics.arcade.overlap(player, coinGroup, this.collectCoinCallback, null, this);
+            }
+
         },
 
         getPlayer: function() {
@@ -111,11 +120,16 @@
 
         createCoin: function () {
             var coin = new Coin(this.game, 1000, this.game.world.randomY, this);
-            this.game.add.existing(coin);
+            coinGroup.add(coin);
         },
 
         collectCoin: function () {
             coins++;
+        },
+
+        collectCoinCallback: function (player, coin) {
+            this.collectCoin();
+            coin.destroy();
         },
 
         speedUp: function () {
