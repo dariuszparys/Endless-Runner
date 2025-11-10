@@ -42,20 +42,10 @@ define([
 
         calculateCoinSpeed();
 
-        // Check for collection (overlap with player)
-        if (this.physicsInitialized) {
-            this.game.physics.arcade.overlap(this, gameScene.getPlayer(), this.collect, null, this);
-        }
-
         this.position.x -= coinSpeed;
         if (this.position.x < -50) {
             this.destroy();
         }
-    }
-
-    Coin.prototype.collect = function (coin, player) {
-        gameScene.collectCoin();
-        coin.destroy();
     }
 
     function calculateCoinSpeed() {
